@@ -1,0 +1,167 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, "Segoe UI", "Helvetica Neue", sans-serif;
+  color: #111827;
+  background: #f9fafb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --surface: #ffffff;
+  --surface-subtle: #f9fafb;
+  --surface-muted: #f3f4f6;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --brand: #003b73;
+  --brand-soft: #eff6ff;
+  --accent: #007f8d;
+  --success: #166534;
+  --success-soft: #f0fdf4;
+  --warning: #92400e;
+  --warning-soft: #fffbeb;
+  --danger: #991b1b;
+  --danger-soft: #fef2f2;
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Inter, "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  transition: color 180ms var(--ease-out), background-color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+button:not([class]):not(:disabled):hover {
+  border-color: var(--border-strong);
+  background-color: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+button:focus-visible {
+  outline: 3px solid rgba(0, 127, 141, 0.38);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+.page-error {
+  margin: 16px 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+input,
+select,
+textarea {
+  color: var(--text-primary);
+  font: inherit;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(0, 127, 141, 0.38);
+  outline-offset: 2px;
+}
+
+.table-wrapper:focus-visible,
+.table-wrap:focus-visible {
+  outline: 3px solid rgba(0, 127, 141, 0.38);
+  outline-offset: -3px;
+}
+
+[class*="data-table-card"],
+[class*="metric-card"],
+[class*="panel-card"] {
+  animation: surface-reveal 240ms var(--ease-out) both;
+}
+
+@keyframes surface-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media print {
+  @page { size: A4 portrait; margin: 8mm; }
+  body.printing-property-qr * { visibility: hidden !important; }
+  body.printing-property-qr app-property-qr-page,
+  body.printing-property-qr app-property-qr-page * { visibility: visible !important; }
+  body.printing-property-qr app-property-qr-page {
+    position: fixed !important;
+    inset: 0 !important;
+    display: grid !important;
+    place-items: center !important;
+    background: #fff !important;
+  }
+  body.printing-property-qr app-property-qr-page .qr-screen { display: none !important; }
+  body.printing-property-qr app-property-qr-page .print-sheets {
+    display: grid !important;
+    width: 194mm;
+    margin: 0 auto;
+  }
+  body.printing-property-qr app-property-qr-page .print-sheet {
+    display: grid !important;
+    width: 194mm;
+    height: 281mm;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 4mm;
+    break-after: page;
+    page-break-after: always;
+  }
+  body.printing-property-qr app-property-qr-page .print-sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+  body.printing-property-qr app-property-qr-page .print-card {
+    display: flex !important;
+    overflow: hidden;
+    color: #111827;
+    background: #fff;
+  }
+}
