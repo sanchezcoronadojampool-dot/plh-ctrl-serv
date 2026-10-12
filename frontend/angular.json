@@ -28,7 +28,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/proyecto2/",
+              "baseHref": "/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

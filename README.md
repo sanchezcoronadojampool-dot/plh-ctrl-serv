@@ -10,7 +10,7 @@ La aplicación gestiona propiedades, personal, facturación y lecturas de agua/l
 
 ## Despliegue con Docker Compose
 
-Docker Compose levanta PostgreSQL, la API Spring Boot y Angular servido por Nginx. PostgreSQL conserva los datos en el volumen `postgres_data`, y Flyway crea o actualiza el esquema cuando arranca la API. La aplicación se publica por el proxy compartido bajo `/proyecto2/`; la raíz queda reservada para la landing del cliente y ningún puerto interno de la aplicación se publica al host.
+Docker Compose levanta PostgreSQL, la API Spring Boot y Angular servido por Nginx. PostgreSQL conserva los datos en el volumen `postgres_data`, y Flyway crea o actualiza el esquema cuando arranca la API. La aplicación se publica por el proxy compartido en su propio hostname y ningún puerto interno de la aplicación se publica al host.
 
 Requisitos: Docker Desktop en Windows (o Docker Engine y el plugin Compose en Linux), y acceso a internet para descargar imágenes y dependencias la primera vez.
 
@@ -21,7 +21,7 @@ Copy-Item .env.example .env
 notepad .env
 ```
 
-`JWT_SECRET` debe tener al menos 32 bytes aleatorios y mantenerse igual entre reinicios. Las contraseñas deben tener entre 12 y 72 bytes UTF-8; guarda `.env` de forma privada y no lo incluyas en control de versiones. Define `FRONTEND_ORIGIN` como el origen público sin subruta y `PASSWORD_RESET_BASE_URL` como la dirección completa bajo `/proyecto2/`. La plantilla muestra HTTP solo para pruebas; una instalación comercial requiere HTTPS y las URL públicas correspondientes. Si PostgreSQL aún no tiene una cuenta administradora activa, define también `BOOTSTRAP_ADMIN_USERNAME` y `BOOTSTRAP_ADMIN_PASSWORD`; el backend crea esa cuenta en el primer arranque. El bootstrap no altera una cuenta administradora activa que ya exista.
+`JWT_SECRET` debe tener al menos 32 bytes aleatorios y mantenerse igual entre reinicios. Las contraseñas deben tener entre 12 y 72 bytes UTF-8; guarda `.env` de forma privada y no lo incluyas en control de versiones. Define `FRONTEND_ORIGIN=https://servicios-plh-condominio.duckdns.org` y `PASSWORD_RESET_BASE_URL=https://servicios-plh-condominio.duckdns.org/login/restablecer`. Si PostgreSQL aún no tiene una cuenta administradora activa, define también `BOOTSTRAP_ADMIN_USERNAME` y `BOOTSTRAP_ADMIN_PASSWORD`; el backend crea esa cuenta en el primer arranque. El bootstrap no altera una cuenta administradora activa que ya exista.
 
 Arranca los servicios desde la misma carpeta:
 
@@ -33,7 +33,7 @@ docker compose ps
 docker compose logs -f backend
 ```
 
-Si la red `web` ya existe porque otro proyecto usa el proxy, no la vuelvas a crear; compruébala con `docker network inspect web`. Inicia también el proxy compartido y abre `http://localhost/proyecto2/` en pruebas locales, o la URL HTTPS del cliente. Los QR de propiedad usan el origen de la página y la subruta desde donde se generan.
+Si la red `web` ya existe porque otro proyecto usa el proxy, no la vuelvas a crear; compruébala con `docker network inspect web`. Inicia también el proxy compartido y abre `https://servicios-plh-condominio.duckdns.org`. Los QR de propiedad usan el origen de la página desde donde se generan.
 
 El backend y la base de datos no publican puertos al host: solo son accesibles desde la red privada de Compose. Los secretos se entregan a los contenedores desde `.env`; el ejemplo incluye los ajustes opcionales de SMTP. No compartas la salida de `docker compose config` porque puede mostrar variables resueltas.
 
