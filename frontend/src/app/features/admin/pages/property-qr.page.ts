@@ -70,7 +70,7 @@ import { apiErrorMessage } from "../../../core/services/api-error";
         <section class="print-sheet" *ngFor="let sheet of printSheets">
           <article class="print-card" *ngFor="let item of sheet">
             <header class="print-brand">
-              <img src="assets/isotipo-plh.svg" alt="">
+              <img src="assets/logo-plh.png" alt="">
               <div><span>CONDOMINIO</span><strong>Playa La Honda</strong></div>
             </header>
             <p class="print-eyebrow">IDENTIFICACIÓN DE PROPIEDAD</p>
@@ -99,7 +99,7 @@ import { apiErrorMessage } from "../../../core/services/api-error";
     .helper { margin:12px 0 0; }
     .selection-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:18px 0 8px; }
     .selection-heading strong { color:var(--text-primary); font-size:12px; }
-    .selection-heading strong span { display:inline-grid; min-width:21px; height:21px; place-items:center; margin-left:4px; padding:0 5px; border-radius:99px; background:#eff6ff; color:var(--brand); }
+    .selection-heading strong span { display:inline-grid; min-width:21px; height:21px; place-items:center; margin-left:4px; padding:0 5px; border-radius:99px; background:var(--brand-soft); color:var(--brand); }
     .selection-heading div { display:flex; gap:8px; }
     .text-button { min-height:32px; padding:4px 6px; border:0; background:transparent; color:var(--brand); font-size:11px; font-weight:650; }
     .property-checklist { display:grid; max-height:280px; gap:4px; overflow-y:auto; padding:4px; border:1px solid var(--border); border-radius:8px; }
@@ -124,7 +124,7 @@ import { apiErrorMessage } from "../../../core/services/api-error";
     .print-sheet { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)); gap:4mm; }
     .print-card { display:flex; min-width:0; flex-direction:column; align-items:center; justify-content:center; padding:4mm; border:1px solid #d1d5db; border-radius:3mm; text-align:center; }
     .print-brand { display:flex; align-items:center; gap:2mm; margin-bottom:2mm; }
-    .print-brand img { width:8mm; height:8mm; object-fit:contain; }
+    .print-brand img { width:12mm; height:12mm; object-fit:contain; }
     .print-brand div { display:grid; gap:1px; text-align:left; }
     .print-brand span { color:#4b5563; font-size:6pt; font-weight:750; letter-spacing:.1em; }
     .print-brand strong { color:#003b73; font-size:9pt; }

@@ -36,7 +36,7 @@ import { Router } from '@angular/router';
     .section-heading { display:flex; align-items:center; gap:11px; margin-bottom:14px; }
     .section-heading h2 { margin:0; color:var(--text-primary); font-size:15px; }
     .section-heading p { margin:3px 0 0; color:#52525b; font-size:12px; line-height:1.45; }
-    .step { display:grid; flex:none; width:30px; height:30px; place-items:center; border:1px solid #bfdbfe; border-radius:9px; background:#eff6ff; color:#1d4ed8; font-size:13px; font-weight:700; }
+    .step { display:grid; flex:none; width:30px; height:30px; place-items:center; border:1px solid var(--border); border-radius:9px; background:var(--brand-soft); color:var(--brand); font-size:13px; font-weight:700; }
     .manual-entry form { display: grid; gap: 12px; }
     .manual-entry label { color: var(--text-primary); font-size: 13px; font-weight: 600; }
     .manual-entry input { width: 100%; min-height: 40px; padding: 9px 11px; border: 1px solid var(--border-strong); border-radius: 8px; font: inherit; }

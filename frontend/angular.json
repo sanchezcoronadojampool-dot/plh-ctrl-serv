@@ -28,6 +28,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/proyecto2/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -41,7 +42,13 @@
                   "maximumError": "1mb"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": {
+                  "inline": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,

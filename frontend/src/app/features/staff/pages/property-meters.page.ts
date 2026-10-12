@@ -57,9 +57,9 @@ import { ServicioApi } from "../../../core/services/servicio-api.service";
     .meter-heading span { color:var(--text-secondary); font-size:12px; }
     .meter-list { display:grid; gap:10px; }
     .meter-option { display:flex; width:100%; min-height:72px; align-items:center; gap:13px; padding:12px; border:1px solid var(--border); border-radius:11px; background:#fff; text-align:left; }
-    .meter-option:hover { border-color:#93c5fd; background:#f8fbff; }
+    .meter-option:hover { border-color:var(--accent); background:var(--accent-soft); }
     .service-icon { display:grid; width:42px; height:42px; flex:none; place-items:center; border-radius:11px; font-size:17px; }
-    .service-icon.water { background:#eff6ff; color:#1d4ed8; }
+    .service-icon.water { background:var(--brand-soft); color:var(--brand); }
     .service-icon.power { background:#fffbeb; color:#b45309; }
     .meter-copy { display:grid; flex:1; gap:4px; }
     .meter-copy strong { color:var(--text-primary); font-size:14px; }

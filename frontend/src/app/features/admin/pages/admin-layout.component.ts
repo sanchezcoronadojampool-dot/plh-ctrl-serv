@@ -17,7 +17,7 @@ import { EMPTY, Subject, catchError, merge, switchMap, takeUntil, timer } from "
         <div class="sidebar-header">
           <div class="brand-container">
             <div class="logo-mark">
-              <img src="assets/isotipo-plh.svg" alt="" class="brand-isotype">
+              <img src="assets/logo-plh.png" alt="" class="brand-isotype">
             </div>
             <div class="brand-copy">
               <span>Condominio</span>
@@ -126,8 +126,8 @@ import { EMPTY, Subject, catchError, merge, switchMap, takeUntil, timer } from "
     .sidebar { width: 248px; flex: 0 0 248px; display: flex; flex-direction: column; overflow-y: auto; padding: 24px 16px; background: #fff; border-right: 1px solid var(--border); }
     .sidebar-header { margin: 0 0 32px; }
     .brand-container { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
-    .logo-mark { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-subtle); }
-    .brand-isotype { width: 30px; height: 30px; object-fit: contain; }
+    .logo-mark { display: grid; width: 76px; height: 76px; flex:none; place-items: center; overflow:hidden; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+    .brand-isotype { width: 100%; height: 100%; object-fit: contain; }
     .brand-copy { display: grid; gap: 2px; line-height: 1.2; }
     .brand-copy span { color: var(--text-muted); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
     .brand-copy strong { color: var(--text-primary); font-size: 14px; font-weight: 700; }

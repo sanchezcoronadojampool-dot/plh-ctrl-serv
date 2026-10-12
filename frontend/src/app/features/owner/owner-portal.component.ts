@@ -114,7 +114,7 @@ import { apiErrorMessage } from "../../core/services/api-error";
     .owner-header .owner-heading>p:last-child { font-size:13px; }
     .logout-button { display:inline-flex; flex:none; min-height:40px; align-items:center; justify-content:center; gap:8px; border:1px solid var(--border-strong); border-radius:8px; background:white; padding:8px 12px; color:#3f3f46; font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
     .logout-button:hover { border-color:#fca5a5; background:#fef2f2; color:#991b1b; }
-    .logout-button:focus-visible,.mobile-section-nav a:focus-visible { outline:3px solid #93c5fd; outline-offset:2px; }
+    .logout-button:focus-visible,.mobile-section-nav a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
     .eyebrow { color: #52525b !important; font-size: 12px; font-weight: 700; letter-spacing: .08em; }
     .mobile-section-nav { display:none; }
     .section { margin: 24px 0; }
@@ -131,7 +131,7 @@ import { apiErrorMessage } from "../../core/services/api-error";
     .property-card h4>span { display:grid; min-width:20px; height:20px; place-items:center; margin-left:auto; border-radius:99px; background:#f4f4f5; color:#3f3f46; font-size:11px; }
     .meter-list { display:grid; gap:7px; margin:0; padding:0; list-style:none; }
     .meter-list li { display:flex; min-width:0; align-items:center; gap:9px; padding:8px 9px; border:1px solid #e4e4e7; border-radius:8px; background:#fafafa; }
-    .service-badge { display:inline-flex; flex:none; align-items:center; gap:5px; padding:4px 7px; border:1px solid #bfdbfe; border-radius:99px; background:#eff6ff; color:#1e40af; font-size:11px; font-weight:650; text-transform:capitalize; }
+    .service-badge { display:inline-flex; flex:none; align-items:center; gap:5px; padding:4px 7px; border:1px solid var(--border); border-radius:99px; background:var(--brand-soft); color:var(--brand); font-size:11px; font-weight:650; text-transform:capitalize; }
     .service-badge.water { border-color:#a5f3fc; background:#ecfeff; color:#155e75; }
     .meter-serial { min-width:0; overflow:hidden; color:#52525b; font-size:11px; text-overflow:ellipsis; white-space:nowrap; }
     .meter-serial strong { color:#27272a; font-weight:600; }

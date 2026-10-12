@@ -171,15 +171,15 @@ type Tab = 'meters' | 'tariffs';
     .subtitle { margin-top:7px; }
     .tabs { display:flex; border-bottom:1px solid #e4e4e7; margin-bottom:18px; gap:22px; }
     .tabs button { display:flex; align-items:center; gap:8px; background:none; border:0; border-bottom:2px solid transparent; color:#52525b; padding:12px 1px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; }
-    .tabs button.selected { color:#18181b; border-color:#2563eb; }
+    .tabs button.selected { color:#18181b; border-color:var(--accent); }
     .tabs span { color:#52525b; background:#f4f4f5; border-radius:10px; padding:2px 7px; font-size:11px; }
     .panel { background:#fff; border:1px solid #e4e4e7; border-radius:12px; box-shadow:0 1px 2px #18181b08,0 8px 24px #18181b05; }
     .panel-toolbar { padding:20px 22px; }
     .search-field { display:flex; align-items:center; gap:9px; width:min(350px,45%); height:38px; padding:0 12px; border:1px solid #d4d4d8; border-radius:7px; color:#52525b; }
     .search-field input { width:100%; border:0; outline:0; color:#18181b; font:inherit; font-size:13px; background:transparent; }
     .primary-button,.secondary-button,.icon-button { border-radius:7px; cursor:pointer; transition:background .18s cubic-bezier(.16,1,.3,1),border-color .18s,transform .18s; }
-    .primary-button { display:inline-flex; justify-content:center; align-items:center; gap:8px; padding:10px 14px; border:1px solid #1d4ed8; background:#2563eb; color:white; font-family:inherit; font-size:13px; font-weight:600; }
-    .primary-button:hover:not(:disabled) { background:#1d4ed8; transform:translateY(-1px); }
+    .primary-button { display:inline-flex; justify-content:center; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--brand); background:linear-gradient(135deg,var(--accent),var(--brand)); color:white; font-family:inherit; font-size:13px; font-weight:600; }
+    .primary-button:hover:not(:disabled) { background:var(--brand-strong); transform:translateY(-1px); }
     .primary-button:disabled,.secondary-button:disabled { opacity:.55; cursor:not-allowed; }
     .secondary-button { padding:8px 11px; border:1px solid #d4d4d8; background:#fff; color:#27272a; font-family:inherit; font-size:12px; font-weight:600; }
     .secondary-button:hover:not(:disabled) { background:#f4f4f5; }
@@ -188,7 +188,7 @@ type Tab = 'meters' | 'tariffs';
     .form-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
     label { display:flex; flex-direction:column; gap:6px; color:#3f3f46; font-size:12px; font-weight:600; }
     input,select { min-width:0; height:38px; padding:0 10px; border:1px solid #d4d4d8; border-radius:6px; background:#fff; color:#18181b; font-family:inherit; font-size:13px; }
-    input:focus,select:focus,.search-field:focus-within { outline:2px solid #93c5fd; outline-offset:1px; border-color:#2563eb; }
+    input:focus,select:focus,.search-field:focus-within { outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent); }
     .optional { color:#52525b; font-weight:400; }
     .form-hint { margin:12px 0 0; }
     .form-actions { justify-content:flex-end; margin-top:16px; }
@@ -198,7 +198,7 @@ type Tab = 'meters' | 'tariffs';
     td { padding:13px 16px; border-bottom:1px solid #f0f0f1; color:#3f3f46; font-size:13px; }
     td strong { color:#18181b; } td small { display:block; margin-top:4px; color:#52525b; font-size:11px; }
     tr:last-child td { border-bottom:0; }
-    .service-badge { display:inline-flex; padding:4px 8px; border:1px solid #bfdbfe; border-radius:999px; background:#eff6ff; color:#1e40af; font-size:11px; font-weight:600; }
+    .service-badge { display:inline-flex; padding:4px 8px; border:1px solid var(--border); border-radius:999px; background:var(--brand-soft); color:var(--brand); font-size:11px; font-weight:600; }
     .service-badge.water { border-color:#a5f3fc; background:#ecfeff; color:#155e75; }
     .row-actions { text-align:right; }
     .icon-button { width:32px; height:32px; margin-left:4px; border:1px solid transparent; background:transparent; color:#52525b; }
@@ -207,7 +207,7 @@ type Tab = 'meters' | 'tariffs';
     .table-footer { padding:13px 18px; border-top:1px solid #e4e4e7; color:#52525b; font-size:12px; }
     .table-footer div { display:flex; gap:7px; }
     .empty-state { display:flex; align-items:center; flex-direction:column; padding:38px 20px 42px; text-align:center; }
-    .empty-icon { display:grid; width:46px; height:46px; place-items:center; border-radius:12px; background:#eff6ff; color:#1d4ed8; font-size:19px; }
+    .empty-icon { display:grid; width:46px; height:46px; place-items:center; border-radius:12px; background:var(--brand-soft); color:var(--brand); font-size:19px; }
     .empty-state h3 { margin-top:14px; }
     .empty-state p { max-width:380px; line-height:1.55; margin:6px 0 16px; }
     .feedback { padding:10px 12px; margin:0 0 14px; border-radius:7px; }

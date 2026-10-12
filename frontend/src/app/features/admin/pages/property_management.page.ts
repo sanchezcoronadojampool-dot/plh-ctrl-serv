@@ -193,8 +193,8 @@ import { apiErrorMessage } from "../../../core/services/api-error";
     .text-right { text-align: right; }
     .unit-id { font-weight: 650; color: var(--brand); }
     .unit-main { font-weight: 600; color: var(--text-primary); }
-    .meter-chip { display: inline-flex; align-items: center; gap: 5px; margin: 2px 4px 2px 0; padding: 4px 7px; border: 1px solid #dbeafe; border-radius: 6px; background: #eff6ff; color: #1e3a8a; font-size: 10px; font-weight: 600; white-space: nowrap; }
-    .meter-chip i { color: #1d4ed8; }
+    .meter-chip { display: inline-flex; align-items: center; gap: 5px; margin: 2px 4px 2px 0; padding: 4px 7px; border: 1px solid var(--border); border-radius: 6px; background: var(--brand-soft); color: var(--brand); font-size: 10px; font-weight: 600; white-space: nowrap; }
+    .meter-chip i { color: var(--brand); }
     .muted { color: #52525b; font-size: 11px; }
     
     .status-pill { padding: 3px 8px; border-radius: 100px; font-size: 10px; font-weight: 650; }

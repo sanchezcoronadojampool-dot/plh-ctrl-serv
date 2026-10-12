@@ -168,7 +168,7 @@ import { ReportPdfService } from "../../../core/services/report-pdf.service";
     .metric-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .metric-label { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
     .metric-icon { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; background: var(--surface-subtle); font-size: 15px; }
-    .properties-icon { color: var(--brand); background: #eff6ff; }
+    .properties-icon { color: var(--brand); background: var(--brand-soft); }
     .readings-icon { color: #9a3412; background: #fff7ed; }
     .invoices-icon { color: #166534; background: #f0fdf4; }
     .metric-body { margin-top: 12px; }

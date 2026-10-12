@@ -8,31 +8,32 @@ La aplicación gestiona propiedades, personal, facturación y lecturas de agua/l
 - **Frontend:** Angular 20 y CSS.
 - **Base de datos:** PostgreSQL.
 
-## Despliegue inicial con Docker Compose
+## Despliegue con Docker Compose
 
-Docker Compose levanta PostgreSQL, la API Spring Boot y Angular servido por Nginx. Nginx entrega la aplicación y reenvía `/api` al backend por una red interna; solo el frontend publica un puerto en el host. PostgreSQL conserva los datos en el volumen `postgres_data`, y Flyway crea o actualiza el esquema cuando arranca la API.
+Docker Compose levanta PostgreSQL, la API Spring Boot y Angular servido por Nginx. PostgreSQL conserva los datos en el volumen `postgres_data`, y Flyway crea o actualiza el esquema cuando arranca la API. La aplicación se publica por el proxy compartido bajo `/proyecto2/`; la raíz queda reservada para la landing del cliente y ningún puerto interno de la aplicación se publica al host.
 
 Requisitos: Docker Desktop en Windows (o Docker Engine y el plugin Compose en Linux), y acceso a internet para descargar imágenes y dependencias la primera vez.
 
-Desde la raíz del proyecto, crea el archivo local de entorno y edítalo:
+Desde la raíz del proyecto, crea el archivo local de entorno y reemplaza sus marcadores:
 
 ```powershell
 Copy-Item .env.example .env
 notepad .env
 ```
 
-Reemplaza todos los valores `CHANGE_ME` por secretos propios. `JWT_SECRET` debe tener al menos 32 bytes y mantenerse igual entre reinicios. Las contraseñas deben tener entre 12 y 72 bytes UTF-8; guarda `.env` de forma privada y no lo incluyas en control de versiones. Si PostgreSQL aún no tiene una cuenta administradora activa, define también `BOOTSTRAP_ADMIN_USERNAME` y `BOOTSTRAP_ADMIN_PASSWORD`; el backend crea esa cuenta en el primer arranque. El bootstrap no altera una cuenta administradora activa que ya exista.
+`JWT_SECRET` debe tener al menos 32 bytes aleatorios y mantenerse igual entre reinicios. Las contraseñas deben tener entre 12 y 72 bytes UTF-8; guarda `.env` de forma privada y no lo incluyas en control de versiones. Define `FRONTEND_ORIGIN` como el origen público sin subruta y `PASSWORD_RESET_BASE_URL` como la dirección completa bajo `/proyecto2/`. La plantilla muestra HTTP solo para pruebas; una instalación comercial requiere HTTPS y las URL públicas correspondientes. Si PostgreSQL aún no tiene una cuenta administradora activa, define también `BOOTSTRAP_ADMIN_USERNAME` y `BOOTSTRAP_ADMIN_PASSWORD`; el backend crea esa cuenta en el primer arranque. El bootstrap no altera una cuenta administradora activa que ya exista.
 
 Arranca los servicios desde la misma carpeta:
 
 ```powershell
+docker network create web
 docker compose config --quiet
 docker compose up -d --build
 docker compose ps
 docker compose logs -f backend
 ```
 
-Abre `http://localhost:8080` (o el puerto que definas en `HTTP_PORT`). El mapeo predeterminado escucha solo en `127.0.0.1`, preparado para que un proxy TLS en el mismo host publique la aplicación. Para una prueba accesible desde la red local, configura `HTTP_BIND_ADDRESS=0.0.0.0`, limita el acceso con el firewall y no expongas la aplicación en Internet por HTTP. En producción usa un dominio HTTPS con un reverse proxy; establece `FRONTEND_ORIGIN` y `PASSWORD_RESET_BASE_URL` al origen público HTTPS. Los QR de propiedad usan el origen de la página desde donde se generan, por lo que el personal debe escanearlos desde ese dominio.
+Si la red `web` ya existe porque otro proyecto usa el proxy, no la vuelvas a crear; compruébala con `docker network inspect web`. Inicia también el proxy compartido y abre `http://localhost/proyecto2/` en pruebas locales, o la URL HTTPS del cliente. Los QR de propiedad usan el origen de la página y la subruta desde donde se generan.
 
 El backend y la base de datos no publican puertos al host: solo son accesibles desde la red privada de Compose. Los secretos se entregan a los contenedores desde `.env`; el ejemplo incluye los ajustes opcionales de SMTP. No compartas la salida de `docker compose config` porque puede mostrar variables resueltas.
 

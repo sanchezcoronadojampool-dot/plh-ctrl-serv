@@ -41,10 +41,10 @@ import { AuthService } from "../../core/services/auth.service";
   `,
     styles: [`
     .login-page { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); background: var(--surface-subtle); overflow-y: auto; position: relative; }
-    .background-waves { position: absolute; inset: 0 0 auto; height: 5px; background: var(--brand); opacity: .9; }
+    .background-waves { position: absolute; inset: 0 0 auto; height: 5px; background: linear-gradient(90deg, var(--brand), var(--accent) 68%, var(--sun)); opacity: .9; }
     .login-card { background: var(--surface); padding: 40px 36px; border-radius: 16px; box-shadow: var(--shadow-card); width: 100%; max-width: 420px; text-align: center; z-index: 1; border: 1px solid var(--border); }
     .login-header { margin-bottom: 32px; }
-    .login-brand { display: block; width: min(100%, 320px); height: auto; max-height: 150px; object-fit: contain; margin: 0 auto 18px; }
+    .login-brand { display: block; width: min(100%, 180px); height: auto; object-fit: contain; margin: 0 auto 18px; }
     .brand-name { font-weight: 700; font-size: 22px; color: var(--text-primary); margin: 0; letter-spacing: -.03em; }
     .brand-tagline { color: var(--text-secondary); font-size: 13px; font-weight: 500; margin-top: 8px; }
     .login-form { display: flex; flex-direction: column; gap: 18px; }
@@ -53,8 +53,8 @@ import { AuthService } from "../../core/services/auth.service";
     .input-group input { min-height: 42px; padding: 10px 12px; background: white; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 14px; }
     .input-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,127,141,.14); }
     .error-msg { color: var(--danger); font-size: 12px; margin-top: 4px; font-weight: 500; }
-    .btn-primary { min-height: 42px; padding: 10px 14px; background: var(--brand); color: white; border: 1px solid var(--brand); border-radius: 8px; font-weight: 650; font-size: 14px; margin-top: 4px; }
-    .btn-primary:hover { background: #002e5a; transform: translateY(-1px); box-shadow: var(--shadow-card); }
+    .btn-primary { min-height: 42px; padding: 10px 14px; background: linear-gradient(135deg, var(--accent), var(--brand)); color: white; border: 1px solid var(--brand); border-radius: 8px; font-weight: 650; font-size: 14px; margin-top: 4px; }
+    .btn-primary:hover { background: var(--brand-strong); transform: translateY(-1px); box-shadow: var(--shadow-card); }
     .btn-primary:disabled { background: var(--text-muted); border-color: var(--text-muted); cursor: not-allowed; }
     .login-footer { margin-top: 28px; font-size: 10px; color: var(--text-secondary); font-weight: 600; letter-spacing: 1px; }
     .registration-link { margin: 18px 0 0; color: var(--text-secondary); font-size: 13px; }

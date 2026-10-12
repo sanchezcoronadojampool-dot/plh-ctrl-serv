@@ -54,8 +54,8 @@ import { apiErrorMessage } from "../../core/services/api-error";
     .back-link { color:var(--brand); font-weight:650; }
     label { display:flex; flex-direction:column; gap:7px; margin:16px 0; color:var(--text-primary); font-size:13px; font-weight:600; }
     input { height:42px; padding:0 12px; border:1px solid var(--border); border-radius:8px; font:inherit; }
-    input:focus { outline:2px solid #93c5fd; outline-offset:1px; border-color:#2563eb; }
-    .primary-button { width:100%; margin-top:10px; padding:11px 14px; border:1px solid #1d4ed8; border-radius:8px; background:#2563eb; color:white; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; }
+    input:focus { outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent); }
+    .primary-button { width:100%; margin-top:10px; padding:11px 14px; border:1px solid var(--brand); border-radius:8px; background:linear-gradient(135deg, var(--accent), var(--brand)); color:white; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; }
     .primary-button:disabled { opacity:.55; cursor:not-allowed; }
     .notice { margin-top:18px; padding:16px; border:1px solid #bbf7d0; border-radius:10px; background:#f0fdf4; }
     h2 { margin:0 0 7px; color:#166534; font-size:16px; }
