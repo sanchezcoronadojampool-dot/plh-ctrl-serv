@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminApiService, ApiPage, Propiedad, ReadingHistory } from '../../../core/services/admin-api.service';
 import { apiErrorMessage } from '../../../core/services/api-error';
 import { ReportPdfService } from '../../../core/services/report-pdf.service';
-import { finalize } from 'rxjs';
+import { finalize, firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-reading-history-page',
@@ -231,10 +231,13 @@ export class ReadingHistoryPage implements OnInit {
     let currentPage = 0;
     let last = false;
     while (!last) {
-      const page: ApiPage<ReadingHistory> = await this.api.getReadingHistory({
+      const page = await firstValueFrom(this.api.getReadingHistory({
         page: currentPage, size: 100, servicio: this.service, propiedad: this.propertyId,
         desde: this.fromDate, hasta: this.toDate, q: this.query.trim()
-      }).toPromise();
+      }));
+      if (!page) {
+        throw new Error('No se recibió una respuesta válida del servidor.');
+      }
       all.push(...page.content);
       last = page.last || page.content.length === 0;
       currentPage++;
