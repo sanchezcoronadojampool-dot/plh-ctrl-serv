@@ -22,7 +22,6 @@ public interface LecturaRepository extends JpaRepository<Lectura, UUID> {
     long countByFechaLecturaGreaterThanEqual(LocalDateTime fecha);
     boolean existsByStaff_IdStaff(UUID idStaff);
     boolean existsByMedidor_IdMedidor(UUID idMedidor);
-    List<Lectura> findAllByFechaLecturaGreaterThanEqualOrderByFechaLecturaAsc(LocalDateTime fecha);
     List<Lectura> findAllByFechaLecturaGreaterThanEqualAndFechaLecturaLessThanOrderByFechaLecturaAsc(
         LocalDateTime inicio,
         LocalDateTime fin

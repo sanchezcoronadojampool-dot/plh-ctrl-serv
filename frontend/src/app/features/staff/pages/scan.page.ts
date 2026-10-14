@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ServicioApi } from '../../../core/services/servicio-api.service';
+import { apiErrorMessage } from '../../../core/services/api-error';
 
 @Component({
     selector: 'app-scan-page',
@@ -14,12 +16,13 @@ import { Router } from '@angular/router';
           <app-qr-scanner></app-qr-scanner>
         </section>
         <section class="manual-entry">
-          <div class="section-heading"><span class="step">2</span><div><h2>Ingreso manual</h2><p>Usa esta alternativa si no puedes escanear el código.</p></div></div>
+          <div class="section-heading"><span class="step">2</span><div><h2>Ingreso manual</h2><p>Teclea el UUID del medidor o su número de serie si no puedes escanear el código.</p></div></div>
           <form (ngSubmit)="openMeter()" #meterForm="ngForm">
-            <label for="meter-id">Identificador UUID del medidor</label>
-            <input id="meter-id" name="meterId" [(ngModel)]="meterId" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+            <label for="meter-id">Identificador o número de serie del medidor</label>
+            <input id="meter-id" name="meterId" [(ngModel)]="meterId" required placeholder="UUID o número de serie">
             <p class="error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
-            <button type="submit" [disabled]="meterForm.invalid">Continuar</button>
+            <p class="success" *ngIf="successMessage" role="status">{{ successMessage }}</p>
+            <button type="submit" [disabled]="meterForm.invalid || isSearching">{{ isSearching ? 'Buscando...' : 'Continuar' }}</button>
           </form>
         </section>
       </div>
@@ -43,6 +46,7 @@ import { Router } from '@angular/router';
     .manual-entry button { min-height: 44px; padding: 10px 14px; border: 1px solid var(--brand); border-radius: 8px; background: var(--brand); color: white; font-size:14px; font-weight: 650; cursor:pointer; }
     .manual-entry button:disabled { opacity: .55; }
     .error { margin: 0; color: var(--danger); }
+    .success { margin: 0; color: var(--success); font-weight: 600; }
     @media (max-width: 600px) {
       .scan-page { padding: 14px 0 max(56px, env(safe-area-inset-bottom)); }
       .scan-container { gap:11px; }
@@ -62,17 +66,37 @@ import { Router } from '@angular/router';
 export class ScanPage {
   meterId = '';
   errorMessage = '';
+  successMessage = '';
+  isSearching = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ServicioApi) {}
 
   openMeter() {
     const id = this.meterId.trim();
-    if (!this.isUuid(id)) {
-      this.errorMessage = "El identificador debe ser un UUID válido.";
+    if (!id) return;
+    this.errorMessage = '';
+    this.successMessage = '';
+    if (this.isUuid(id)) {
+      this.router.navigate(['/staff/read', id]);
       return;
     }
-    this.errorMessage = "";
-    this.router.navigate(['/staff/read', id]);
+    this.lookupBySerie(id);
+  }
+
+  private lookupBySerie(serie: string) {
+    this.isSearching = true;
+    this.api.getMedidorInfoBySerie(serie).subscribe({
+      next: (info) => {
+        this.isSearching = false;
+        this.successMessage = `Medidor encontrado: casa ${info.numeroCasa} (${info.tipoServicio}).`;
+        this.router.navigate(['/staff/read', info.idMedidor]);
+      },
+      error: (error: unknown) => {
+        console.error('Error buscando medidor por serie', error);
+        this.errorMessage = apiErrorMessage(error, 'No se encontró ningún medidor con ese identificador o serie.');
+        this.isSearching = false;
+      }
+    });
   }
 
   private isUuid(value: string) {

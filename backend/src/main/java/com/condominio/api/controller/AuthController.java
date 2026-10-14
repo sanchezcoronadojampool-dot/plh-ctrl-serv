@@ -8,6 +8,7 @@ import com.condominio.api.model.Staff;
 import com.condominio.api.repository.StaffRepository;
 import com.condominio.api.service.JwtService;
 import com.condominio.api.service.OwnerRegistrationService;
+import com.condominio.api.util.Roles;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -45,26 +44,12 @@ public class AuthController {
                 && passwordEncoder.matches(request.password(), account.getPasswordHash()))
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario o contraseña incorrectos."));
 
-        String role = normalizeRole(staff.getRolSistema());
         String name = staff.getNombre();
         if (name == null || name.isBlank()) {
             name = staff.getPersona() == null
                 ? staff.getUsername()
                 : staff.getPersona().getNombre() + " " + staff.getPersona().getApellidoPaterno();
         }
-        return new LoginResponse(jwtService.issueToken(staff), staff.getUsername(), role, name);
-    }
-
-    public static String normalizeRole(String role) {
-        String normalized = role == null ? "" : role.trim().toLowerCase(Locale.ROOT);
-        if (normalized.startsWith("role_")) {
-            normalized = normalized.substring("role_".length());
-        }
-        if (normalized.equals("admin") || normalized.equals("administrador")) {
-            return "ADMIN";
-        }
-        return normalized.equals("propietario") || normalized.equals("owner")
-            ? "OWNER"
-            : "STAFF";
+        return new LoginResponse(jwtService.issueToken(staff), staff.getUsername(), Roles.normalize(staff.getRolSistema()), name);
     }
 }

@@ -32,12 +32,14 @@ class PasswordResetServiceTest {
     private final StaffRepository staffRepository = mock(StaffRepository.class);
     private final PasswordResetTokenRepository tokenRepository = mock(PasswordResetTokenRepository.class);
     private final PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+    private final MailSettings mailSettings = new MailSettings();
     private final PasswordResetService service = new PasswordResetService(
         staffRepository,
         tokenRepository,
         passwordEncoder,
         mock(org.springframework.mail.javamail.JavaMailSender.class),
-        new BrandedEmailTemplate()
+        new BrandedEmailTemplate(),
+        mailSettings
     );
 
     @Test
@@ -98,7 +100,7 @@ class PasswordResetServiceTest {
 
     @Test
     void reportsWhenMailRecoveryIsNotConfiguredWithoutLookingUpAccounts() {
-        ReflectionTestUtils.setField(service, "mailHost", "");
+        ReflectionTestUtils.setField(mailSettings, "host", "");
 
         ResponseStatusException error = assertThrows(ResponseStatusException.class, () ->
             service.request(new com.condominio.api.dto.PasswordResetRequest("owner@example.com"))
@@ -113,10 +115,10 @@ class PasswordResetServiceTest {
 
     @Test
     void reportsIncompleteSmtpCredentialsBeforeLookingUpAccounts() {
-        ReflectionTestUtils.setField(service, "mailHost", "smtp.gmail.com");
-        ReflectionTestUtils.setField(service, "mailUsername", "admin@example.com");
-        ReflectionTestUtils.setField(service, "mailPassword", "");
-        ReflectionTestUtils.setField(service, "from", "admin@example.com");
+        ReflectionTestUtils.setField(mailSettings, "host", "smtp.gmail.com");
+        ReflectionTestUtils.setField(mailSettings, "username", "admin@example.com");
+        ReflectionTestUtils.setField(mailSettings, "password", "");
+        ReflectionTestUtils.setField(mailSettings, "from", "admin@example.com");
 
         ResponseStatusException error = assertThrows(ResponseStatusException.class, () ->
             service.request(new com.condominio.api.dto.PasswordResetRequest("owner@example.com"))

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminApiService, ApiPage, Propiedad, ReadingHistory } from '../../../core/services/admin-api.service';
 import { apiErrorMessage } from '../../../core/services/api-error';
+import { ReportPdfService } from '../../../core/services/report-pdf.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -13,6 +14,10 @@ import { finalize } from 'rxjs';
     <main class="history-page">
       <header class="page-heading">
         <div><p class="eyebrow">OPERACIONES</p><h1>Historial de lecturas</h1><p>Consulta lecturas, quién las registró y la evidencia disponible.</p></div>
+        <div class="heading-actions">
+          <button class="secondary-button" type="button" (click)="exportCsv()" [disabled]="readings.length === 0 || exporting"><i class="fa-solid fa-file-csv" aria-hidden="true"></i> CSV</button>
+          <button class="secondary-button pdf" type="button" (click)="exportPdf()" [disabled]="readings.length === 0 || exporting"><i class="fa-regular fa-file-pdf" aria-hidden="true"></i> {{ exporting ? 'Preparando...' : 'PDF' }}</button>
+        </div>
       </header>
       <div class="property-context" *ngIf="selectedProperty">
         <i class="fa-solid fa-house-chimney" aria-hidden="true"></i>
@@ -65,7 +70,8 @@ import { finalize } from 'rxjs';
   `,
     styles: [`
     :host{display:block;color:#18181b}.history-page{max-width:1440px;margin:0 auto;padding:28px 32px 48px}
-    .page-heading{margin-bottom:22px}h1{margin:0;font-size:28px;letter-spacing:-.035em}.eyebrow{margin:0 0 7px;color:#52525b;font-size:10px;font-weight:700;letter-spacing:.1em}
+    .page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}h1{margin:0;font-size:28px;letter-spacing:-.035em}.eyebrow{margin:0 0 7px;color:#52525b;font-size:10px;font-weight:700;letter-spacing:.1em}
+    .heading-actions{display:flex;align-items:center;gap:8px}.heading-actions .secondary-button{display:inline-flex;align-items:center;gap:7px}.heading-actions .pdf{color:#991b1b}.heading-actions .pdf:hover:not(:disabled){border-color:#991b1b}
     .page-heading p:last-child{margin:7px 0 0;color:#52525b;font-size:13px}.panel{border:1px solid #e4e4e7;border-radius:12px;background:#fff;box-shadow:0 1px 2px #18181b08}
     .property-context{display:flex;align-items:center;gap:12px;margin:-6px 0 16px;padding:13px 16px;border:1px solid var(--border);border-radius:9px;background:var(--brand-soft);color:var(--brand)}.property-context>i{font-size:18px}.property-context div{display:grid;gap:3px}.property-context strong{font-size:13px}.property-context span{color:#374151;font-size:11px}
     .filters{display:grid;grid-template-columns:2fr 1.2fr 1fr 1fr 1fr auto;align-items:end;gap:11px;padding:18px}
@@ -96,11 +102,17 @@ export class ReadingHistoryPage implements OnInit {
   toDate = '';
   query = '';
   loading = false;
+  exporting = false;
   errorMessage = '';
   private pageIndex = 0;
   private loadSequence = 0;
 
-  constructor(private readonly api: AdminApiService, private readonly route: ActivatedRoute, private readonly router: Router) {}
+  constructor(
+    private readonly api: AdminApiService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly reportPdf: ReportPdfService
+  ) {}
   get selectedProperty(): Propiedad | undefined { return this.properties.find(property => property.id === this.propertyId); }
   get hasFilters(): boolean { return !!(this.service || this.fromDate || this.toDate || this.query.trim()); }
 
@@ -154,5 +166,79 @@ export class ReadingHistoryPage implements OnInit {
         }
       },
     });
+  }
+
+  /**
+   * Exporta el historial filtrado. Recorre todas las páginas del filtro actual
+   * para no limitar el reporte a la página visible.
+   */
+  exportCsv(): void {
+    if (this.exporting || !this.propertyId) return;
+    this.exporting = true;
+    this.errorMessage = '';
+    this.fetchAllForExport().then(rows => {
+      const csv = [
+        ['Fecha', 'Servicio', 'Serie', 'Lectura', 'Registrada por', 'Evidencia', 'GPS', 'Observaciones'],
+        ...rows.map(r => [
+          r.fecha, r.servicio, r.numeroSerie, String(r.valor), r.staff,
+          r.evidenciaUrl ?? '', r.coordenadas ?? '', r.observaciones ?? ''
+        ])
+      ].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+      const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `historial-lecturas-casa-${this.selectedProperty?.numeroCasa ?? 'propiedad'}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      this.exporting = false;
+    }).catch((error: unknown) => {
+      console.error('Error exportando historial a CSV', error);
+      this.errorMessage = 'No se pudo exportar el historial de lecturas.';
+      this.exporting = false;
+    });
+  }
+
+  async exportPdf(): Promise<void> {
+    if (this.exporting || !this.propertyId) return;
+    this.exporting = true;
+    this.errorMessage = '';
+    try {
+      const rows = await this.fetchAllForExport();
+      await this.reportPdf.export({
+        title: 'Historial de lecturas',
+        subtitle: `Casa ${this.selectedProperty?.numeroCasa ?? ''} · ${rows.length} lecturas`,
+        filename: `historial-lecturas-casa-${this.selectedProperty?.numeroCasa ?? 'propiedad'}`,
+        headers: ['Fecha', 'Servicio', 'Serie', 'Lectura', 'Registrada por'],
+        rows: rows.map(r => [
+          new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(r.fecha)),
+          r.servicio === 'agua' ? 'Agua' : 'Luz',
+          r.numeroSerie,
+          String(r.valor),
+          r.staff
+        ])
+      });
+    } catch (error: unknown) {
+      console.error('Error exportando historial a PDF', error);
+      this.errorMessage = error instanceof Error ? error.message : 'No se pudo generar el PDF del historial.';
+    } finally {
+      this.exporting = false;
+    }
+  }
+
+  private async fetchAllForExport(): Promise<ReadingHistory[]> {
+    const all: ReadingHistory[] = [];
+    let currentPage = 0;
+    let last = false;
+    while (!last) {
+      const page: ApiPage<ReadingHistory> = await this.api.getReadingHistory({
+        page: currentPage, size: 100, servicio: this.service, propiedad: this.propertyId,
+        desde: this.fromDate, hasta: this.toDate, q: this.query.trim()
+      }).toPromise();
+      all.push(...page.content);
+      last = page.last || page.content.length === 0;
+      currentPage++;
+    }
+    return all;
   }
 }

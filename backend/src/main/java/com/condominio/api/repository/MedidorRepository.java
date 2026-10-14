@@ -9,6 +9,7 @@ public interface MedidorRepository extends JpaRepository<Medidor, UUID> {
     boolean existsByTarifa_IdTarifa(UUID idTarifa);
     boolean existsByNumeroSerieIgnoreCase(String numeroSerie);
     boolean existsByNumeroSerieIgnoreCaseAndIdMedidorNot(String numeroSerie, UUID idMedidor);
+    java.util.Optional<Medidor> findByNumeroSerieIgnoreCase(String numeroSerie);
     List<Medidor> findAllByPropiedad_IdPropiedadIn(List<UUID> propertyIds);
     List<Medidor> findAllByPropiedad_IdPropiedadOrderByTipoServicioAscNumeroSerieAsc(UUID propertyId);
     List<Medidor> findAllByOrderByNumeroSerieAsc();

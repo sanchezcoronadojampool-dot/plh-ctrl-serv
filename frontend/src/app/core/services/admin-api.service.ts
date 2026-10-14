@@ -47,7 +47,7 @@ export interface Factura {
   casa: string;
   total: number;
   fecha: string;
-  estado: 'Pagado' | 'Pendiente';
+  estado: 'Pagado' | 'Pendiente' | 'Vencido';
 }
 
 export interface DashboardSummary {

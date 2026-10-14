@@ -47,6 +47,16 @@ export class AuthService {
     return this.http.post<void>(`${this.apiUrl}/password-reset/complete`, { token, password });
   }
 
+  /**
+   * Cambia la contraseña de la cuenta que está en sesión.
+   */
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.put<void>(
+      `${environment.apiUrl}/staff/me/password`,
+      { currentPassword, newPassword }
+    );
+  }
+
   saveSession(response: LoginResponse) {
     sessionStorage.setItem(this.tokenKey, response.token);
     sessionStorage.setItem(this.roleKey, response.role);

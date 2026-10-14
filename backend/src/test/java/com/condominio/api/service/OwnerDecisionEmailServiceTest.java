@@ -10,9 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 class OwnerDecisionEmailServiceTest {
+    private final MailSettings mailSettings = new MailSettings();
     private final OwnerDecisionEmailService service = new OwnerDecisionEmailService(
         mock(org.springframework.mail.javamail.JavaMailSender.class),
-        new BrandedEmailTemplate()
+        new BrandedEmailTemplate(),
+        mailSettings
     );
 
     @Test
@@ -24,10 +26,10 @@ class OwnerDecisionEmailServiceTest {
 
     @Test
     void refusesToSendWhenGmailCredentialsAreIncomplete() {
-        ReflectionTestUtils.setField(service, "mailHost", "smtp.gmail.com");
-        ReflectionTestUtils.setField(service, "mailUsername", "admin@example.com");
-        ReflectionTestUtils.setField(service, "mailPassword", "");
-        ReflectionTestUtils.setField(service, "from", "admin@example.com");
+        ReflectionTestUtils.setField(mailSettings, "host", "smtp.gmail.com");
+        ReflectionTestUtils.setField(mailSettings, "username", "admin@example.com");
+        ReflectionTestUtils.setField(mailSettings, "password", "");
+        ReflectionTestUtils.setField(mailSettings, "from", "admin@example.com");
         ReflectionTestUtils.setField(service, "frontendOrigin", "http://localhost:4200");
         OwnerRegistration registration = new OwnerRegistration();
         registration.setCorreoElectronico("owner@example.com");

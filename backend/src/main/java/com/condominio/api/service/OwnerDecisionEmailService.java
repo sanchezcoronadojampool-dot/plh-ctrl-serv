@@ -19,15 +19,8 @@ import java.nio.charset.StandardCharsets;
 public class OwnerDecisionEmailService {
     private final JavaMailSender mailSender;
     private final BrandedEmailTemplate emailTemplate;
+    private final MailSettings mailSettings;
 
-    @Value("${spring.mail.host:}")
-    private String mailHost;
-    @Value("${spring.mail.username:}")
-    private String mailUsername;
-    @Value("${spring.mail.password:}")
-    private String mailPassword;
-    @Value("${app.mail.from:}")
-    private String from;
     @Value("${app.frontend-origin:http://localhost:4200}")
     private String frontendOrigin;
 
@@ -54,10 +47,7 @@ public class OwnerDecisionEmailService {
         if (registration.getCorreoElectronico() == null || registration.getCorreoElectronico().isBlank()) {
             return;
         }
-        if (mailHost == null || mailHost.isBlank()
-            || mailUsername == null || mailUsername.isBlank()
-            || mailPassword == null || mailPassword.isBlank()
-            || from == null || from.isBlank()) {
+        if (!mailSettings.isConfigured()) {
             throw new ResponseStatusException(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "No se puede notificar al propietario: configura usuario, contraseña de aplicación y remitente SMTP."
@@ -66,7 +56,7 @@ public class OwnerDecisionEmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
-            helper.setFrom(from);
+            helper.setFrom(mailSettings.from());
             helper.setTo(registration.getCorreoElectronico());
             helper.setSubject(content.subject());
             helper.setText(content.text(), content.html());

@@ -2,6 +2,8 @@ package com.condominio.api.config;
 
 import com.condominio.api.repository.StaffRepository;
 import com.condominio.api.model.Staff;
+import com.condominio.api.util.PasswordPolicy;
+import com.condominio.api.util.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -39,18 +41,17 @@ public class AdminPasswordRecovery implements ApplicationRunner {
             throw new IllegalStateException(
                 "Configura juntas ADMIN_RECOVERY_USERNAME y ADMIN_RECOVERY_PASSWORD."
             );
-        }
-        if (password.length() < 12 || password.getBytes(StandardCharsets.UTF_8).length > 72) {
-            throw new IllegalStateException(
-                "La contraseña de recuperación debe tener entre 12 y 72 bytes UTF-8."
-            );
+        }        try {
+            PasswordPolicy.validate(password);
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalStateException("La contraseña de recuperación debe tener entre 12 y 72 bytes UTF-8.");
         }
 
         String normalizedUsername = username.trim();
         var matchingAccount = staffRepository.findByUsernameIgnoreCase(normalizedUsername);
         if (matchingAccount.isPresent()) {
             Staff account = matchingAccount.get();
-            if (!account.isActivo() || !esAdministrador(account.getRolSistema())) {
+            if (!account.isActivo() || !Roles.isAdmin(account.getRolSistema())) {
                 throw new IllegalStateException(
                     "ADMIN_RECOVERY_USERNAME pertenece a una cuenta inactiva o que no es administradora."
                 );
@@ -79,9 +80,5 @@ public class AdminPasswordRecovery implements ApplicationRunner {
             .nombre(normalizedUsername)
             .activo(true)
             .build());
-    }
-
-    private static boolean esAdministrador(String role) {
-        return "admin".equalsIgnoreCase(role) || "administrador".equalsIgnoreCase(role);
     }
 }

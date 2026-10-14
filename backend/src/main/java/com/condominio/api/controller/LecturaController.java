@@ -46,17 +46,30 @@ public class LecturaController {
         return ResponseEntity.ok(lecturaService.obtenerInformacionMedidor(idMedidor));
     }
 
+    /**
+     * Búsqueda de medidor por número de serie para el personal (respaldo cuando el QR no se puede leer).
+     */
+    @GetMapping("/info-serie")
+    public ResponseEntity<MedidorInfoResponse> getInfoPorSerie(@RequestParam String serie) {
+        return ResponseEntity.ok(lecturaService.obtenerInformacionMedidorPorSerie(serie));
+    }
+
     @GetMapping("/info-propiedad/{idPropiedad}")
     public ResponseEntity<PropiedadMedidoresResponse> getInfoPropiedad(@PathVariable UUID idPropiedad) {
         return ResponseEntity.ok(lecturaService.obtenerMedidoresDePropiedad(idPropiedad));
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<Lectura> registrarLectura(
+    public ResponseEntity<LecturaResponse> registrarLectura(
         @Valid @RequestBody LecturaRequest request,
         @AuthenticationPrincipal String username
     ) {
         Lectura lectura = lecturaService.registrarLectura(request, username);
-        return ResponseEntity.ok(lectura);
+        return ResponseEntity.ok(new LecturaResponse(
+            lectura.getIdLectura(),
+            lectura.getMedidor().getIdMedidor(),
+            lectura.getValorLectura(),
+            lectura.getFechaLectura()
+        ));
     }
 }

@@ -3,13 +3,14 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { Router } from "@angular/router";
 import { AuthService } from "../../../core/services/auth.service";
+import { PasswordChangeDialog } from "../../../core/components/password-change.dialog";
 import { AdminNotification, NotificationApiService } from "../../../core/services/notification-api.service";
 import { apiErrorMessage } from "../../../core/services/api-error";
 import { EMPTY, Subject, catchError, merge, switchMap, takeUntil, timer } from "rxjs";
 
 @Component({
     selector: "app-admin-layout",
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, PasswordChangeDialog],
     template: `
     <div class="admin-shell">
       <!-- SIDEBAR -->
@@ -97,6 +98,7 @@ import { EMPTY, Subject, catchError, merge, switchMap, takeUntil, timer } from "
               </div>
               <div class="profile-avatar">{{ currentUser.initials }}</div>
             </div>
+            <app-password-change-dialog />
             <button type="button" (click)="logout()" class="btn-logout">
               <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
               <span>Cerrar sesión</span>

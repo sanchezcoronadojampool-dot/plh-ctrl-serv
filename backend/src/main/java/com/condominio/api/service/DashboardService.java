@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,15 +21,16 @@ public class DashboardService {
 
     @Transactional(readOnly = true)
     public DashboardSummaryResponse obtenerResumen() {
-        var facturasPendientes = facturaRepository.findAllByEstatusPagoIgnoreCase("pendiente");
-        BigDecimal saldoPendiente = facturasPendientes.stream()
+        // Las facturas vencidas siguen debiéndose, por eso se suman a las pendientes en el saldo.
+        var facturasImpagas = facturaRepository.findAllByEstatusPagoIgnoreCaseIn(List.of("pendiente", "vencido"));
+        BigDecimal saldoPendiente = facturasImpagas.stream()
             .map(factura -> factura.getMontoTotal() == null ? BigDecimal.ZERO : factura.getMontoTotal())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         return new DashboardSummaryResponse(
             propiedadRepository.count(),
             propiedadRepository.countByEstatusOcupacionIgnoreCase("ocupada"),
             lecturaRepository.countByFechaLecturaGreaterThanEqual(LocalDate.now().withDayOfMonth(1).atStartOfDay()),
-            facturasPendientes.size(),
+            facturasImpagas.size(),
             saldoPendiente
         );
     }

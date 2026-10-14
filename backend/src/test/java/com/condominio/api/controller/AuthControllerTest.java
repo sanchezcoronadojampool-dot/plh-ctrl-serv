@@ -82,7 +82,9 @@ class AuthControllerTest {
 
     @Test
     void normalizeRoleRecognizesLegacyAdminRoleFormatting() {
-        assertEquals("ADMIN", AuthController.normalizeRole("  ADMINISTRADOR  "));
-        assertEquals("ADMIN", AuthController.normalizeRole("ROLE_ADMIN"));
+        assertEquals("ADMIN", com.condominio.api.util.Roles.normalize("  ADMINISTRADOR  "));
+        assertEquals("ADMIN", com.condominio.api.util.Roles.normalize("ROLE_ADMIN"));
+        assertEquals("OWNER", com.condominio.api.util.Roles.normalize("propietario"));
+        assertEquals("STAFF", com.condominio.api.util.Roles.normalize("operador"));
     }
 }

@@ -1,5 +1,6 @@
 package com.condominio.api.controller;
 
+import com.condominio.api.dto.PasswordChangeRequest;
 import com.condominio.api.dto.StaffRequest;
 import com.condominio.api.dto.StaffResponse;
 import com.condominio.api.service.StaffAdminService;
@@ -36,6 +37,18 @@ public class StaffController {
         @AuthenticationPrincipal String username
     ) {
         return staffService.actualizar(id, request, username);
+    }
+
+    /**
+     * Cambia la contraseña de la cuenta que está en sesión. Cualquier rol autenticado puede usarlo.
+     */
+    @PutMapping("/me/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cambiarPasswordPropia(
+        @Valid @RequestBody PasswordChangeRequest request,
+        @AuthenticationPrincipal String username
+    ) {
+        staffService.cambiarPasswordPropia(username, request.currentPassword(), request.newPassword());
     }
 
     @DeleteMapping("/{id}")

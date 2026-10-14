@@ -85,16 +85,35 @@ public class LecturaService {
     public MedidorInfoResponse obtenerInformacionMedidor(UUID idMedidor) {
         Medidor medidor = medidorRepository.findById(idMedidor)
             .orElseThrow(() -> new ResourceNotFoundException("Medidor no encontrado."));
-        
-        var ultimaLectura = lecturaRepository.findFirstByMedidor_IdMedidorOrderByFechaLecturaDesc(idMedidor);
+        return toMedidorInfo(medidor);
+    }
+
+    /**
+     * Permite al personal localizar un medidor tecleando su número de serie,
+     * útil cuando el QR está dañado o ilegible.
+     */
+    @Transactional(readOnly = true)
+    public MedidorInfoResponse obtenerInformacionMedidorPorSerie(String numeroSerie) {
+        String serie = numeroSerie == null ? "" : numeroSerie.trim();
+        if (serie.isEmpty()) {
+            throw new IllegalArgumentException("El número de serie es requerido.");
+        }
+        Medidor medidor = medidorRepository.findByNumeroSerieIgnoreCase(serie)
+            .orElseThrow(() -> new ResourceNotFoundException("No existe un medidor con ese número de serie."));
+        return toMedidorInfo(medidor);
+    }
+
+    private MedidorInfoResponse toMedidorInfo(Medidor medidor) {
+        var ultimaLectura = lecturaRepository
+            .findFirstByMedidor_IdMedidorOrderByFechaLecturaDesc(medidor.getIdMedidor());
         BigDecimal valor = ultimaLectura.isPresent() ? ultimaLectura.get().getValorLectura() : BigDecimal.ZERO;
-        
+
         String propietario = propiedadPersonasRepository
             .findFirstByPropiedad_IdPropiedadAndEsResponsablePagoTrue(medidor.getPropiedad().getIdPropiedad())
             .map(PropiedadPersona::getPersona)
             .map(persona -> (persona.getNombre() + " " + persona.getApellidoPaterno()).trim())
             .orElse("Sin asignar");
-        
+
         return new MedidorInfoResponse(
             medidor.getIdMedidor(),
             medidor.getPropiedad().getNumeroCasa(),

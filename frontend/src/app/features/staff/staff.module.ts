@@ -7,6 +7,7 @@ import { ReadingPage } from "./pages/reading.page";
 import { StaffLayoutComponent } from "./pages/staff-layout.component";
 import { QrScannerComponent } from "./components/qr-scanner.component";
 import { PropertyMetersPage } from "./pages/property-meters.page";
+import { PasswordChangeDialog } from "../../core/components/password-change.dialog";
 import { ZXingScannerModule } from "@zxing/ngx-scanner";
 
 const routes: Routes = [
@@ -27,7 +28,8 @@ const routes: Routes = [
     CommonModule, 
     FormsModule, 
     RouterModule.forChild(routes),
-    ZXingScannerModule
+    ZXingScannerModule,
+    PasswordChangeDialog
   ],
 })
 export class StaffModule { }

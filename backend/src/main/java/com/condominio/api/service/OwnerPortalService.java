@@ -1,6 +1,5 @@
 package com.condominio.api.service;
 
-import com.condominio.api.dto.FacturaResponse;
 import com.condominio.api.dto.OwnerMeterResponse;
 import com.condominio.api.dto.OwnerPortalResponse;
 import com.condominio.api.dto.OwnerPropertyResponse;
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,6 +31,7 @@ public class OwnerPortalService {
     private final MedidorRepository medidorRepository;
     private final LecturaRepository lecturaRepository;
     private final FacturaRepository facturaRepository;
+    private final FacturaMapper facturaMapper;
 
     @Transactional(readOnly = true)
     public OwnerPortalResponse overview(String username) {
@@ -78,10 +77,10 @@ public class OwnerPortalService {
             : lecturaRepository.findAllByMedidor_IdMedidorInOrderByFechaLecturaDesc(meterIds).stream()
                 .map(this::toReadingResponse)
                 .toList();
-        List<FacturaResponse> invoices = propertyIds.isEmpty()
+        List<com.condominio.api.dto.FacturaResponse> invoices = propertyIds.isEmpty()
             ? List.of()
             : facturaRepository.findAllByPropiedad_IdPropiedadInOrderByFechaEmisionDesc(propertyIds).stream()
-                .map(this::toInvoiceResponse)
+                .map(facturaMapper::toResponse)
                 .toList();
         return new OwnerPortalResponse(properties, readings, invoices);
     }
@@ -93,22 +92,6 @@ public class OwnerPortalService {
             reading.getMedidor().getTipoServicio(),
             reading.getValorLectura(),
             reading.getFechaLectura()
-        );
-    }
-
-    private FacturaResponse toInvoiceResponse(Factura invoice) {
-        LocalDate date = invoice.getFechaEmision() == null
-            ? LocalDate.now()
-            : invoice.getFechaEmision().toLocalDate();
-        String number = "FAC-" + date.getYear() + "-"
-            + invoice.getIdFactura().toString().substring(0, 8).toUpperCase();
-        return new FacturaResponse(
-            invoice.getIdFactura(),
-            number,
-            invoice.getPropiedad().getNumeroCasa(),
-            invoice.getMontoTotal(),
-            date,
-            invoice.getEstatusPago().equalsIgnoreCase("pagado") ? "Pagado" : "Pendiente"
         );
     }
 }

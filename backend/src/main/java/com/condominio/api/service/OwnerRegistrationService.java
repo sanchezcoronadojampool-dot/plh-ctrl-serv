@@ -18,12 +18,12 @@ import com.condominio.api.repository.PropiedadPersonasRepository;
 import com.condominio.api.repository.PropiedadRepository;
 import com.condominio.api.repository.RolPropiedadRepository;
 import com.condominio.api.repository.StaffRepository;
+import com.condominio.api.util.PasswordPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,9 +47,7 @@ public class OwnerRegistrationService {
         if (username.length() < 3 || username.length() > 50) {
             throw new IllegalArgumentException("El usuario debe tener entre 3 y 50 caracteres.");
         }
-        if (request.password().getBytes(StandardCharsets.UTF_8).length > 72) {
-            throw new IllegalArgumentException("La contraseña no puede superar 72 bytes UTF-8.");
-        }
+        PasswordPolicy.validate(request.password());
         if (staffRepository.existsByUsernameIgnoreCase(username)
             || registrationRepository.existsByUsernameIgnoreCase(username)) {
             throw new ConflictException("Ese nombre de usuario ya está registrado.");

@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../../../core/services/auth.service";
+import { PasswordChangeDialog } from "../../../core/components/password-change.dialog";
 
 @Component({
   selector: "app-staff-layout",
@@ -22,6 +23,7 @@ import { AuthService } from "../../../core/services/auth.service";
             <strong>{{ auth.name || 'Operador' }}</strong>
             <span>Personal operativo</span>
           </div>
+          <app-password-change-dialog />
           <button type="button" class="logout-button" (click)="logout()" aria-label="Cerrar sesión">
             <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
             <span>Cerrar sesión</span>
@@ -63,7 +65,7 @@ import { AuthService } from "../../../core/services/auth.service";
       .staff-content { padding:20px max(14px, env(safe-area-inset-right)) max(48px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); }
     }
     @media(prefers-reduced-motion:reduce) { .logout-button { transition:none; } }
-  `],
+  `  ],
   standalone: false
 })
 export class StaffLayoutComponent {

@@ -1,58 +1,14 @@
-export interface Persona {
-    idPersona: string;
-    nombre: string;
-    apellidoPaterno: string;
-    apellidoMaterno?: string;
-    documentoIdentidad: string;
-    telefonoPrincipal: string;
-    correoElectronico?: string;
-    estatusCuenta: 'ACTIVO' | 'SUSPENDIDO' | 'MOROSO';
-}
+// DTOs compartidos por el flujo operativo de lecturas (staff).
+// Las interfaces de administración viven en admin-api.service.ts.
 
-export interface Propiedad {
-    idPropiedad: string;
-    codigoInterno: string;
-    numeroCasa: string;
-    manzana?: string;
-    sector?: string;
-    estatusOcupacion: 'ocupada' | 'vacia' | 'en_mantenimiento';
-}
-
-export interface Medidor {
-    idMedidor: string;
-    idPropiedad: string;
-    tipoServicio: 'agua' | 'luz';
-    numeroSerie: string;
-    lecturaInicial: number;
-}
-
-export interface Lectura {
+/** Respuesta de POST /api/lecturas/registrar. */
+export interface LecturaRegistrada {
     idLectura: string;
     idMedidor: string;
-    idStaff: string;
     valorLectura: number;
     fechaLectura: string; // ISO Date string
-    fotoEvidenciaUrl?: string;
-    coordenadasCaptura?: string;
-    observaciones?: string;
 }
 
-export interface Factura {
-    idFactura: string;
-    idLectura: string;
-    idPropiedad: string;
-    idPersonaCobro: string;
-    consumoPeriodo: number;
-    montoSubtotal: number;
-    montoCargoFijo: number;
-    montoTotal: number;
-    fechaEmision: string;
-    fechaVencimiento: string;
-    estatusPago: 'pendiente' | 'pagado' | 'anulado' | 'vencido';
-    metodoPago?: string;
-}
-
-// DTOs para peticiones específicas
 export interface LecturaRequest {
     idMedidor: string;
     valorLectura: number;

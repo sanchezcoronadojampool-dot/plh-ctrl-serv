@@ -2,12 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 import { AuthService } from "../../core/services/auth.service";
+import { PasswordChangeDialog } from "../../core/components/password-change.dialog";
 import { OwnerApiService, OwnerPortalData } from "../../core/services/owner-api.service";
 import { apiErrorMessage } from "../../core/services/api-error";
 
 @Component({
     selector: "app-owner-portal",
-    imports: [CommonModule],
+    imports: [CommonModule, PasswordChangeDialog],
     template: `
     <main class="owner-page">
       <div class="owner-content">
@@ -17,10 +18,13 @@ import { apiErrorMessage } from "../../core/services/api-error";
             <h1>Portal de propietario</h1>
             <p>Hola, {{ firstName }}. Consulta tus inmuebles, lecturas y facturas.</p>
           </div>
-          <button class="logout-button" type="button" (click)="logout()">
-            <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
-            <span>Cerrar sesión</span>
-          </button>
+          <div class="owner-actions">
+            <app-password-change-dialog />
+            <button class="logout-button" type="button" (click)="logout()">
+              <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
         </header>
 
         <nav class="mobile-section-nav" aria-label="Secciones del portal">
@@ -112,6 +116,7 @@ import { apiErrorMessage } from "../../core/services/api-error";
     .owner-header h1 { margin: 4px 0; color: var(--text-primary); font-size: 24px; letter-spacing: -.03em; }
     .owner-header p { margin: 0; color: #52525b; }
     .owner-header .owner-heading>p:last-child { font-size:13px; }
+    .owner-actions { display:flex; flex:none; align-items:center; gap:10px; }
     .logout-button { display:inline-flex; flex:none; min-height:40px; align-items:center; justify-content:center; gap:8px; border:1px solid var(--border-strong); border-radius:8px; background:white; padding:8px 12px; color:#3f3f46; font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
     .logout-button:hover { border-color:#fca5a5; background:#fef2f2; color:#991b1b; }
     .logout-button:focus-visible,.mobile-section-nav a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }

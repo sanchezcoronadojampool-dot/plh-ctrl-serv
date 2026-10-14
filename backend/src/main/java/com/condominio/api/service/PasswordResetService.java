@@ -7,6 +7,7 @@ import com.condominio.api.model.PasswordResetToken;
 import com.condominio.api.model.Staff;
 import com.condominio.api.repository.PasswordResetTokenRepository;
 import com.condominio.api.repository.StaffRepository;
+import com.condominio.api.util.PasswordPolicy;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -37,15 +38,8 @@ public class PasswordResetService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
     private final BrandedEmailTemplate emailTemplate;
+    private final MailSettings mailSettings;
 
-    @Value("${spring.mail.host:}")
-    private String mailHost;
-    @Value("${spring.mail.username:}")
-    private String mailUsername;
-    @Value("${spring.mail.password:}")
-    private String mailPassword;
-    @Value("${app.mail.from:}")
-    private String from;
     @Value("${app.password-reset.base-url}")
     private String resetBaseUrl;
     @Value("${app.password-reset.expiration-minutes:30}")
@@ -53,7 +47,7 @@ public class PasswordResetService {
 
     @Transactional
     public void request(PasswordResetRequest request) {
-        if (!isMailConfigured()) {
+        if (!mailSettings.isConfigured()) {
             throw new ResponseStatusException(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "El correo no está configurado. Define usuario, contraseña de aplicación y remitente SMTP."
@@ -98,7 +92,7 @@ public class PasswordResetService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
-            helper.setFrom(from);
+            helper.setFrom(mailSettings.from());
             helper.setTo(email);
             BrandedEmailTemplate.EmailContent content = emailTemplate.passwordReset(
                 recipientName(staff), link, expirationMinutes
@@ -116,13 +110,6 @@ public class PasswordResetService {
         }
     }
 
-    private boolean isMailConfigured() {
-        return mailHost != null && !mailHost.isBlank()
-            && mailUsername != null && !mailUsername.isBlank()
-            && mailPassword != null && !mailPassword.isBlank()
-            && from != null && !from.isBlank();
-    }
-
     private static String recipientName(Staff staff) {
         if (staff.getNombre() != null && !staff.getNombre().isBlank()) {
             return staff.getNombre();
@@ -134,9 +121,7 @@ public class PasswordResetService {
     }
 
     private static void validatePassword(String password) {
-        if (password.getBytes(StandardCharsets.UTF_8).length > 72) {
-            throw new IllegalArgumentException("La contraseña no puede superar 72 bytes UTF-8.");
-        }
+        PasswordPolicy.validate(password);
     }
 
     private static String sha256(String value) {

@@ -1,9 +1,9 @@
 package com.condominio.api.config;
 
-import com.condominio.api.controller.AuthController;
 import com.condominio.api.model.Staff;
 import com.condominio.api.repository.StaffRepository;
 import com.condominio.api.service.JwtService;
+import com.condominio.api.util.Roles;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var authentication = new UsernamePasswordAuthenticationToken(
                 staff.getUsername(),
                 null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + AuthController.normalizeRole(staff.getRolSistema())))
+                List.of(new SimpleGrantedAuthority("ROLE_" + Roles.normalize(staff.getRolSistema())))
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (JwtException | IllegalArgumentException exception) {

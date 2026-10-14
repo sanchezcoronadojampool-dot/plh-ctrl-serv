@@ -2,13 +2,12 @@ package com.condominio.api.config;
 
 import com.condominio.api.model.Staff;
 import com.condominio.api.repository.StaffRepository;
+import com.condominio.api.util.PasswordPolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
 
 @Component
 public class InitialAdminBootstrap implements ApplicationRunner {
@@ -53,7 +52,9 @@ public class InitialAdminBootstrap implements ApplicationRunner {
         if (normalizedUsername.length() > 50) {
             throw new IllegalStateException("BOOTSTRAP_ADMIN_USERNAME no puede superar 50 caracteres.");
         }
-        if (password.length() < 12 || password.getBytes(StandardCharsets.UTF_8).length > 72) {
+        try {
+            PasswordPolicy.validate(password);
+        } catch (IllegalArgumentException exception) {
             throw new IllegalStateException("La contraseña inicial debe tener entre 12 y 72 bytes UTF-8.");
         }
         if (staffRepository.existsByUsernameIgnoreCase(normalizedUsername)) {
